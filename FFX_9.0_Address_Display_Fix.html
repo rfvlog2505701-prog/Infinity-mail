@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#7548f5">
+  <meta name="referrer" content="no-referrer">
+  <title>ILoveTempMail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    :root {
+      --a: #ff0033;
+      --ag: rgba(255, 0, 51, 0.7);
+      --ad: rgba(255, 0, 51, 0.1);
+      --ab: rgba(255, 0, 51, 0.35);
+      --bg0: #030407;
+      --bg1: #07080f;
+      --bg2: #0b0d18;
+      --brd: rgba(255, 255, 255, 0.05);
+      --brda: rgba(255, 0, 51, 0.28);
+      --txt: #e8e8f0;
+      --txm: #8888aa;
+      --txd: #44445a;
+      --ease: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--bg0);
+      color: var(--txt);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    button {
+      cursor: pointer;
+      font-family: inherit;
+      border: none;
+      background: none;
+    }
+    ::-webkit-scrollbar {
+      width: 2px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg0);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--a);
+      border-radius: 2px;
+    }
+    ::selection {
+      background: var(--a);
+      color: #fff;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(ellipse 90% 50% at 50% 0%, var(--ad) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 80%, var(--ad) 0%, transparent 50%);
+      background-size: 100% 100%, 100% 100%;
+      z-index: 0;
+      pointer-events: none;
+      transition: background-image 0.5s;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(var(--grid-line, rgba(255, 0, 51, 0.015)) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line, rgba(255, 0, 51, 0.015)) 1px, transparent 1px);
+      background-size: 55px 55px;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .scanline {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, var(--ag) 40%, rgba(255, 255, 255, 0.25) 50%, var(--ag) 60%, transparent 100%);
+      z-index: 9;
+      pointer-events: none;
+      animation: scanDown 12s linear infinite;
+    }
+    @keyframes scanDown {
+      0% {
+        top: -5px;
+        opacity: 0.8
+      }
+      90% {
+        opacity: 0.3
+      }
+      100% {
+        top: 100vh;
+        opacity: 0
+      }
+    }
+    #pCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    #preloader {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+    #preloader.out {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .pl-badge {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 7px;
+      color: var(--ag);
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      animation: plBlink 1.2s step-end infinite;
+    }
+    @keyframes plBlink {
+      0%,
+      100% {
+        opacity: 1
+      }
+      50% {
+        opacity: 0.2
+      }
+    }
+    .pl-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: 10px;
+      color: #fff;
+      text-transform: uppercase;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .pl-logo .r {
+      color: var(--a);
+      text-shadow: 0 0 30px var(--a), 0 0 60px var(--ad);
+    }
+    .pl-track {
+      width: 240px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.06);
+      margin-top: 32px;
+      overflow: hidden;
+    }
+    .pl-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, transparent, var(--a), #fff, var(--a));
+      background-size: 200% auto;
+      animation: plFill 2s cubic-bezier(0.4, 0, 0.2, 1) forwards, plShine 0.6s linear infinite;
+      box-shadow: 0 0 15px var(--a);
+    }
+    @keyframes plFill {
+      to {
+        width: 100%
+      }
+    }
+    @keyframes plShine {
+      to {
+        background-position: 200% center
+      }
+    }
+    .pl-pct {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      color: var(--a);
+      margin-top: 16px;
+    }
+    .mob-theme-btn {
+      position: fixed;
+      right: 16px;
+      bottom: 88px;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(3, 4, 7, 0.98), rgba(15, 16, 28, 0.98));
+      border: 1px solid var(--brda);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      z-index: 500;
+      cursor: pointer;
+      box-shadow: 0 0 24px var(--ad), 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      transition: all 0.3s var(--ease);
+      backdrop-filter: blur(20px);
+    }
+    .mob-theme-btn:hover {
+      border-color: var(--a);
+      box-shadow: 0 0 32px var(--ab), 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+    }
+    .mob-theme-btn:active {
+      transform: scale(0.92);
+    }
+    .mob-theme-btn .btn-ring {
+      position: absolute;
+      inset: -1px;
+      border-radius: 15px;
+      border: 1px solid transparent;
+      background: linear-gradient(135deg, var(--a), transparent, var(--a)) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .mob-theme-btn:hover .btn-ring {
+      opacity: 1;
+    }
+    .mob-theme-panel {
+      position: fixed;
+      right: 70px;
+      bottom: 80px;
+      background: rgba(5, 6, 12, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 24px;
+      padding: 16px 12px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 500;
+      backdrop-filter: blur(40px);
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.98), 0 0 0 1px rgba(255, 255, 255, 0.03), 0 20px 60px rgba(0, 0, 0, 0.5);
+      min-width: 50px;
+      align-items: center;
+    }
+    .mob-theme-panel::before {
+      content: 'COLOR';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.38rem;
+      letter-spacing: 3px;
+      color: var(--txd);
+      background: rgba(5, 6, 12, 0.98);
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .mob-theme-panel.open {
+      display: flex;
+    }
+    .thDot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s var(--ease);
+      flex-shrink: 0;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+    .thDot::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1px solid currentColor;
+      opacity: 0;
+      transition: opacity 0.3s;
+      box-shadow: 0 0 10px currentColor;
+    }
+    .thDot:hover {
+      transform: scale(1.2);
+    }
+    .thDot:hover::after {
+      opacity: 0.5;
+    }
+    .thDot:active {
+      transform: scale(1.35);
+    }
+    .thDot.on {
+      border-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 16px currentColor, 0 0 32px currentColor, 0 0 4px rgba(255, 255, 255, 0.4);
+    }
+    .thDot.on::after {
+      opacity: 0.8;
+    }
+    .th-divider {
+      width: 1px;
+      height: 16px;
+      background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      margin: 2px 0;
+    }
+    #musicNotif {
+      position: fixed;
+      bottom: 84px;
+      left: 12px;
+      right: 12px;
+      z-index: 8000;
+      pointer-events: none;
+      transform: translateY(calc(100% + 30px)) scale(0.92);
+      opacity: 0;
+      transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+      will-change: transform, opacity;
+    }
+    #musicNotif.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: all;
+    }
+    #musicNotif.hide {
+      transform: translateY(calc(100% + 30px)) scale(0.94);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.4s cubic-bezier(0.55, 0, 1, 0.45), opacity 0.35s ease;
+    }
+    .music-notif-inner {
+      background: rgba(18, 18, 22, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 22px;
+      padding: 13px 14px 13px 13px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.07), 0 0 30px var(--ad);
+      position: relative;
+      overflow: hidden;
+      touch-action: pan-y;
+      backdrop-filter: blur(40px) saturate(1.8);
+      -webkit-backdrop-filter: blur(40px) saturate(1.8);
+    }
+    .music-notif-inner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 5%, rgba(255, 255, 255, 0.15) 40%, rgba(255, 255, 255, 0.22) 50%, rgba(255, 255, 255, 0.15) 60%, transparent 95%);
+    }
+    .music-notif-inner::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 80px;
+      background: linear-gradient(90deg, var(--ad), transparent);
+      pointer-events: none;
+      border-radius: 22px 0 0 22px;
+    }
+    .mn-album {
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+    .mn-album img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .mn-album::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 13px;
+      border: 2px solid transparent;
+      background: linear-gradient(135deg, var(--ab), transparent, var(--ab)) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      animation: albumGlow 2s linear infinite;
+    }
+    @keyframes albumGlow {
+      0% {
+        opacity: 0.4
+      }
+      50% {
+        opacity: 1
+      }
+      100% {
+        opacity: 0.4
+      }
+    }
+    .mn-text {
+      flex: 1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .mn-app-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.48rem;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.35);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .mn-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #fff;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mn-marquee-wrap {
+      overflow: hidden;
+      width: 100%;
+    }
+    .mn-sub {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.52rem;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.45);
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .mn-sub.scrolling {
+      animation: marquee 8s linear infinite;
+    }
+    @keyframes marquee {
+      0% {
+        transform: translateX(0)
+      }
+      40% {
+        transform: translateX(-60px)
+      }
+      60% {
+        transform: translateX(-60px)
+      }
+      100% {
+        transform: translateX(0)
+      }
+    }
+    .mn-actions {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .mn-close-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .mn-close-btn:active {
+      transform: scale(0.85);
+      background: rgba(255, 255, 255, 0.16);
+    }
+    .mn-swipe-hint {
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 34px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+    }
+    .wrap {
+      width: 100%;
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 16px 14px 100px;
+      position: relative;
+      z-index: 2;
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding: 0 2px;
+    }
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--ad);
+      border: 1px solid var(--brda);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--a);
+      font-size: 18px;
+      box-shadow: 0 0 15px var(--ad);
+    }
+    .logo-text {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 5px;
+      color: #fff;
+      position: relative;
+    }
+    .logo-text em {
+      color: var(--a);
+      text-shadow: 0 0 15px var(--a);
+      font-style: normal;
+    }
+    .logo-text .logo-char {
+      display: inline-block;
+      animation: logoFloat 3s ease-in-out infinite;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    .logo-text .logo-char:nth-child(1) {
+      animation-delay: 0s;
+    }
+    .logo-text .logo-char:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+    .logo-text .logo-char:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+    .logo-text .logo-char:nth-child(4) {
+      animation-delay: 0.3s;
+    }
+    .logo-text .logo-char:nth-child(5) {
+      animation-delay: 0.4s;
+    }
+    .logo-text .logo-char:nth-child(6) {
+      animation-delay: 0.5s;
+    }
+    .logo-text .logo-char:nth-child(7) {
+      animation-delay: 0.6s;
+    }
+    .logo-text .logo-char:nth-child(8) {
+      animation-delay: 0.7s;
+    }
+    @keyframes logoFloat {
+      0%,
+      100% {
+        transform: translateY(0) scale(1);
+      }
+      40% {
+        transform: translateY(-3px) scale(1.08);
+      }
+      70% {
+        transform: translateY(1px) scale(0.97);
+      }
+    }
+    .logo-text::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--a), transparent);
+      animation: logoline 2.5s ease-in-out infinite;
+    }
+    @keyframes logoline {
+      0%,
+      100% {
+        opacity: 0.3;
+        transform: scaleX(0.5);
+      }
+      50% {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+    }
+    .card {
+      background: var(--bg1);
+      border: 1px solid var(--brd);
+      border-radius: 14px;
+      padding: 22px 18px;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--ab), transparent);
+    }
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--a);
+      flex-shrink: 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 var(--ab)
+      }
+      50% {
+        box-shadow: 0 0 0 5px transparent
+      }
+    }
+    .eyebrow-text {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--a);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+    .hero-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .hero-title span {
+      color: var(--a);
+      text-shadow: 0 0 20px var(--ad);
+    }
+    .hero-sub {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.95rem;
+      color: var(--txm);
+      margin-bottom: 20px;
+      line-height: 1.65;
+      font-weight: 500;
+    }
+    .input-wrap {
+      position: relative;
+      margin-bottom: 12px;
+    }
+    .url-input {
+      width: 100%;
+      padding: 13px 80px 13px 44px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--txt);
+      font-size: 0.9rem;
+      font-family: 'Rajdhani', sans-serif;
+      outline: none;
+      transition: border-color .25s, box-shadow .25s;
+    }
+    .url-input::placeholder {
+      color: var(--txd);
+    }
+    .url-input:focus {
+      border-color: var(--a);
+      box-shadow: 0 0 0 3px var(--ad);
+    }
+    .input-left-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--a);
+      font-size: 17px;
+      pointer-events: none;
+    }
+    .paste-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--ad);
+      color: var(--a);
+      border: 1px solid var(--brda);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.6rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Share Tech Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      letter-spacing: 1px;
+      transition: background .2s, border-color .2s;
+    }
+    .paste-btn:hover {
+      background: var(--ad);
+      border-color: var(--a);
+    }
+    .paste-btn:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+    .dl-btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--txt);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: 1px;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(10px);
+    }
+    .dl-btn:hover {
+      background: var(--ad);
+      border-color: var(--a);
+      color: var(--a);
+      box-shadow: 0 4px 20px var(--ab), inset 0 0 10px var(--ad);
+      transform: translateY(-2px);
+    }
+    .dl-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      border-color: rgba(255, 255, 255, 0.05);
+      box-shadow: none;
+      color: var(--txd);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .dl-btn:not(:disabled):active {
+      transform: scale(0.97) translateY(0);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    .status-box {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      font-family: 'Rajdhani', sans-serif;
+    }
+    .status-box.loading {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--txm);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .status-box.error {
+      background: rgba(255, 0, 51, 0.06);
+      color: #ff6680;
+      border: 1px solid rgba(255, 0, 51, 0.2);
+    }
+    .spinner {
+      width: 15px;
+      height: 15px;
+      border: 2px solid var(--ad);
+      border-top-color: var(--a);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .faq-item {
+      background: var(--bg1);
+      border: 1px solid var(--brd);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: 0.3s;
+    }
+    .faq-item.open {
+      border-color: var(--brda);
+    }
+    .faq-q {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      cursor: pointer;
+      gap: 10px;
+    }
+    .faq-q-txt {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--txt);
+      line-height: 1.3;
+    }
+    .faq-arr {
+      font-size: 14px;
+      color: var(--txd);
+      transition: 0.3s;
+      flex-shrink: 0;
+    }
+    .faq-item.open .faq-arr {
+      transform: rotate(180deg);
+      color: var(--a);
+    }
+    .faq-a {
+      display: none;
+      padding: 0 16px 14px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.88rem;
+      color: var(--txm);
+      line-height: 1.6;
+      font-weight: 500;
+    }
+    .faq-item.open .faq-a {
+      display: block;
+    }
+    .bnav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(3, 4, 7, 0.97);
+      border-top: 1px solid var(--brd);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0 14px;
+      z-index: 200;
+      backdrop-filter: blur(24px);
+    }
+    .bnav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 0 16px;
+      transition: 0.2s;
+    }
+    .bnav-btn:active {
+      transform: scale(0.9);
+    }
+    .bnav-icon {
+      font-size: 20px;
+      color: var(--txd);
+      transition: 0.2s;
+    }
+    .bnav-lbl {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.5rem;
+      letter-spacing: 2px;
+      color: var(--txd);
+      transition: 0.2s;
+    }
+    .bnav-btn.active .bnav-icon,
+    .bnav-btn.active .bnav-lbl {
+      color: var(--a);
+    }
+    .bnav-btn.active .bnav-icon {
+      text-shadow: 0 0 12px var(--a);
+    }
+    .tab-section {
+      display: none;
+    }
+    .tab-section.active {
+      display: block;
+    }
+    .s-div {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--ab), transparent);
+      margin: 4px 0 14px;
+      position: relative;
+    }
+    .s-div::before {
+      content: '◆';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--a);
+      font-size: 0.4rem;
+      background: var(--bg0);
+      padding: 0 12px;
+    }
+    .footer {
+      text-align: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.55rem;
+      color: var(--txd);
+      margin-top: 18px;
+      padding-bottom: 10px;
+      letter-spacing: 3px;
+    }
+    .footer span {
+      color: var(--a);
+    }
+    #toastBox {
+      position: fixed;
+      bottom: 72px;
+      left: 12px;
+      right: 12px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      background: rgba(7, 8, 15, 0.98);
+      border: 1px solid var(--brd);
+      border-left: 3px solid var(--a);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 1px;
+      color: var(--txt);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast.err {
+      border-left-color: #ff4466;
+      color: #ff8899;
+    }
+    #checkboxInput {
+      display: none;
+    }
+    .toggleSwitch {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 48px;
+      height: 24px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 40px;
+      cursor: pointer;
+      transition-duration: .3s;
+    }
+    .toggleSwitch::after {
+      content: "";
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      left: 1px;
+      background: conic-gradient(rgba(26, 26, 26, 0.555), #fff, rgba(26, 26, 26, 0.555), #fff, rgba(26, 26, 26, 0.555));
+      border-radius: 50%;
+      transition-duration: .3s;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+    #checkboxInput:checked+.toggleSwitch::after {
+      transform: translateX(24px);
+      transition-duration: .3s;
+    }
+    #checkboxInput:checked+.toggleSwitch {
+      background-color: var(--a);
+      border-color: var(--a);
+      box-shadow: 0 0 12px var(--ab);
+      transition-duration: .3s;
+    }
+    .wait-loader {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 15px auto;
+      position: relative;
+    }
+    .wait-loader::before {
+      content: "";
+      box-sizing: border-box;
+      position: absolute;
+      top: 0; left: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border-top: 2px solid #FFFFFF;
+      border-right: 2px solid transparent;
+      animation: spinner8217 0.8s linear infinite;
+    }
+    @keyframes spinner8217 {
+      to { transform: rotate(360deg); }
+    }
+  
+/* ===== ILoveTempMail unified premium UI ===== */
+.message-icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;background:#f0ebff;color:#7548f5;display:grid;place-items:center;font-size:20px}.message-icon i{animation:iconBreathe 3s ease-in-out infinite}
+:root{--a:#7548f5;--ag:rgba(117,72,245,.72);--ad:rgba(117,72,245,.10);--ab:rgba(117,72,245,.22);--bg0:#f5f4fa;--bg1:#fff;--bg2:#fff;--brd:#e7e5ee;--brda:#d8ccff;--txt:#17151f;--txm:#686575;--txd:#9995a5;--btn-dark:#6033e5;--btn-light:#a78bfa;--ease:cubic-bezier(.2,.75,.25,1);color-scheme:light}
+*{box-sizing:border-box}html{background:#f5f4fa;scroll-behavior:smooth}body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;background:linear-gradient(180deg,#f7f6fb 0%,#f1eff8 100%)!important;color:#17151f!important;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}body:before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(#d9d0f8 1.5px,transparent 1.5px);background-size:20px 20px;opacity:.48}body:after{display:none!important}button,input,select{font:inherit}button{transition:transform .2s ease,box-shadow .2s ease,background .2s ease}button:active{transform:scale(.98)}.scanline,#pCanvas,.mob-theme-btn,.mob-theme-panel{display:none!important}
+#preloader{background:#f7f6fb!important;color:#17151f!important;z-index:999999;gap:18px}#preloader:before{content:"";width:54px;height:54px;border-radius:18px;background:linear-gradient(145deg,#a78bfa,#6535eb);box-shadow:0 10px 24px #7548f544;display:block;animation:logoFloat 1.8s ease-in-out infinite}.pl-badge{font:600 11px Inter,sans-serif!important;letter-spacing:2px!important;color:#7548f5!important;margin:0!important}.pl-logo{font:750 24px Inter,sans-serif!important;letter-spacing:-.8px!important;color:#191622!important}.pl-logo .r{color:#7548f5!important;text-shadow:none!important}.pl-track{width:180px!important;height:5px!important;border-radius:9px;background:#e7e2f3!important;margin-top:4px!important}.pl-fill{border-radius:9px;background:linear-gradient(90deg,#a78bfa,#6336ed)!important;box-shadow:none!important}.pl-pct{font:500 12px Inter,sans-serif!important;color:#777184!important}
+.wrap{position:relative;z-index:1;width:min(100%,760px)!important;margin:0 auto!important;padding:0 16px 100px!important}.top-bar{height:84px!important;padding:12px 0!important;border:0!important;background:transparent!important;box-shadow:none!important;display:flex;align-items:center}.logo-row{gap:13px!important}.logo-icon{width:54px!important;height:54px!important;border-radius:17px!important;background:linear-gradient(145deg,#a78bfa,#6738ee)!important;box-shadow:0 7px 18px #7548f544!important;border:0!important;display:grid;place-items:center}.logo-icon:after{content:"";width:27px;height:27px;background:#fff;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='14' rx='3'/%3E%3Cpath d='m4 7 8 6 8-6'/%3E%3C/svg%3E") center/contain no-repeat}.logo-icon img{display:none!important}.logo-text{font:750 23px Inter,sans-serif!important;letter-spacing:-.8px!important;color:#17151f!important}.logo-char,.logo-char.r{color:#17151f!important;text-shadow:none!important}
+.tab-section{position:relative;z-index:1}.benefit-strip{display:flex!important;justify-content:center;align-items:center;gap:20px!important;flex-wrap:wrap;padding:10px 4px 22px!important;color:#282532!important;font:500 14px Inter,sans-serif!important}.benefit-strip span{display:flex;align-items:center;gap:7px}.benefit-strip i{color:#7548f5!important;font-size:17px}.card,.mailbox-card,#inbox-section{background:#fff!important;border:1px solid #e6e3ed!important;border-radius:26px!important;box-shadow:0 4px 18px rgba(34,24,66,.055)!important;padding:22px!important;margin-bottom:16px!important;color:#17151f!important}.hero-eyebrow{font:600 11px Inter,sans-serif!important;letter-spacing:1px!important;color:#777184!important}.pulse-dot{background:#18ad5a!important;box-shadow:0 0 0 4px #18ad5a1a!important}.hero-title{font:750 29px Inter,sans-serif!important;letter-spacing:-1px!important;color:#17151f!important}.hero-sub{font:400 14px/1.65 Inter,sans-serif!important;color:#777184!important}.hero-sub span{color:#7548f5!important}
+.mailbox-card{padding:22px!important;background:linear-gradient(145deg,#eee7ff 0%,#fff 56%)!important;border-color:#ded5f6!important}.mailbox-heading{display:flex!important;align-items:center;gap:13px!important;margin-bottom:18px!important}.mail-icon-wrap{width:48px!important;height:48px!important;border-radius:15px!important;background:linear-gradient(145deg,#a78bfa,#6738ee)!important;display:grid!important;place-items:center!important;box-shadow:0 6px 15px #7548f533!important}.mail-icon-wrap svg{width:25px!important;height:25px!important;stroke:#fff!important;fill:none!important;stroke-width:1.8!important;animation:iconBreathe 3s ease-in-out infinite}.mailbox-kicker{font:600 14px Inter,sans-serif!important;color:#686274!important;letter-spacing:0!important}.mailbox-caption{font:400 12px Inter,sans-serif!important;color:#898494!important;margin-top:4px}.live-pill{margin-left:auto!important;background:#e9f8ef!important;color:#169b50!important;border-radius:30px!important;padding:6px 10px!important;font:600 10px Inter,sans-serif!important}.live-pill i{background:#18ad5a!important}.address-line{display:flex!important;align-items:center;gap:9px!important;margin:12px 0 16px!important}.address-value{font:750 clamp(21px,5vw,30px)/1.25 Inter,sans-serif!important;letter-spacing:-.8px!important;color:#17151f!important;overflow-wrap:anywhere!important}.address-domain{color:#7548f5!important}.icon-action{width:44px!important;height:44px!important;flex:0 0 44px!important;border-radius:50%!important;background:#fff!important;border:1px solid #e6e3ed!important;color:#7548f5!important;box-shadow:0 2px 6px #17151f0c!important}.icon-action svg{stroke:currentColor!important}.hidden-address-input{position:absolute!important;left:-9999px!important}.mail-stats{display:flex!important;gap:9px!important;flex-wrap:wrap!important;margin:14px 0 19px!important}.mail-stats span{background:#fff!important;border:1px solid #e8e5ee!important;border-radius:24px!important;padding:9px 13px!important;color:#555160!important;font:500 13px Inter,sans-serif!important;box-shadow:0 2px 5px #17151f0a!important}.mail-stats i{color:#777184!important;margin-right:5px}.primary-action,.dl-btn{min-height:54px!important;border:0!important;border-radius:30px!important;background:linear-gradient(105deg,#966bff,#6333e9)!important;color:#fff!important;font:650 16px Inter,sans-serif!important;letter-spacing:0!important;box-shadow:0 9px 20px #7548f533!important}.primary-action{width:100%!important;display:flex!important;justify-content:center!important;align-items:center!important;gap:10px!important}.primary-action svg{width:22px!important;height:22px!important;stroke:#fff!important;fill:none!important;animation:spinSoft 5s linear infinite}.primary-action:hover,.dl-btn:hover{box-shadow:0 12px 24px #7548f544!important;transform:translateY(-1px)}.input-wrap{background:#fff!important;border:1px solid #e5e2eb!important;border-radius:16px!important;padding:8px 10px!important;box-shadow:none!important}.url-input{background:transparent!important;color:#17151f!important;font:500 15px Inter,sans-serif!important}.paste-btn{background:#f1edff!important;color:#7548f5!important;border:1px solid #e2d8ff!important;border-radius:12px!important;font:600 11px Inter,sans-serif!important}.status-box{border-radius:14px!important;background:#f7f5fc!important;border:1px solid #e8e3f2!important;color:#5f596b!important;font:500 13px Inter,sans-serif!important;padding:12px!important}.spinner,.wait-loader{border-color:#ded5f6!important;border-top-color:#7548f5!important}.wait-loader{width:34px!important;height:34px!important;border-width:3px!important}
+#inbox-section{padding:0!important;overflow:hidden!important}.inbox-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid #e9e6ef}.inbox-head h2{font:700 20px Inter,sans-serif;color:#17151f}.inbox-live{font:500 12px Inter,sans-serif;color:#6f6a79}.inbox-live i{color:#18ad5a;margin-right:6px}.inbox-refresh{padding:10px 15px;border:1px solid #e7e3ed;border-radius:25px;background:#fff;color:#25222d;font:600 13px Inter,sans-serif;box-shadow:0 2px 6px #17151f0b}.inbox-refresh i{color:#7548f5;margin-right:5px}.inbox-body{padding:18px 20px 28px;min-height:280px}#email-list{padding:0 20px 20px!important;gap:10px!important}#email-list>div:not(.empty-state){background:#fff!important;border:1px solid #e9e6ef!important;border-radius:16px!important;padding:14px!important;box-shadow:0 2px 7px #17151f08!important;color:#17151f!important}img{display:none!important}#email-list img{display:none!important}.empty-state{min-height:300px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:30px 12px!important;color:#686575!important;font:400 14px/1.7 Inter,sans-serif!important}.empty-state:before{content:"";width:104px;height:82px;display:block;margin:0 auto 18px;background:linear-gradient(145deg,#a78bfa,#6738ee);border-radius:18px 18px 25px 25px;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 96' fill='none' stroke='black' stroke-width='4' stroke-linejoin='round'%3E%3Cpath d='M12 30h96l-9 52H21z'/%3E%3Cpath d='M18 30 29 12h62l11 18'/%3E%3Cpath d='m31 33 29 25 29-25'/%3E%3C/svg%3E") center/contain no-repeat;animation:iconBreathe 3s ease-in-out infinite}#email-list>div:not(.empty-state){background:#fff!important;color:#24212c!important}#email-list>div:not(.empty-state) div{color:#24212c!important;font-family:Inter,sans-serif!important;font-size:13px!important;font-weight:500!important}#email-list>div:not(.empty-state) div:first-child{font-size:14px!important;font-weight:650!important;color:#17151f!important}.empty-state svg{display:none!important}.empty-state strong{display:block;color:#17151f;font:700 19px Inter,sans-serif;margin:8px 0}.empty-state p{color:#777184;font:400 14px/1.6 Inter,sans-serif}
+#email-content{background:#fff!important;border:1px solid #e9e6ef!important;border-radius:18px!important;padding:16px!important;margin:0 16px 18px!important;color:#17151f!important}#email-subject{font:700 19px Inter,sans-serif!important;color:#17151f!important}#email-sender{font:400 12px Inter,sans-serif!important;color:#777184!important}#email-body{background:#fff!important;border:1px solid #ece9f1!important;border-radius:12px!important;color:#272431!important;font:400 14px/1.6 Inter,sans-serif!important;padding:12px!important}#email-body iframe{max-width:100%!important}
+.bnav{position:fixed!important;z-index:50!important;bottom:0!important;left:0!important;right:0!important;display:flex!important;justify-content:center!important;gap:10px!important;padding:10px 18px calc(10px + env(safe-area-inset-bottom))!important;background:rgba(255,255,255,.94)!important;border-top:1px solid #e6e3ed!important;backdrop-filter:blur(18px)!important}.bnav-btn{width:110px!important;border-radius:14px!important;padding:9px 12px!important;color:#898494!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;font:600 11px Inter,sans-serif!important}.bnav-btn.active{background:#f0ebff!important;color:#7548f5!important}.bnav-icon{font-size:19px!important}.bnav-lbl{font:600 11px Inter,sans-serif!important;letter-spacing:.3px!important}.section-label{font:700 20px Inter,sans-serif!important;color:#17151f!important;letter-spacing:-.4px!important}.s-div{height:1px!important;background:#ece9f1!important;margin:15px 0!important}.faq-item{border:1px solid #e9e6ef!important;border-radius:14px!important;background:#fff!important;margin:9px 0!important;overflow:hidden}.faq-q{padding:15px!important;color:#24212c!important;font:600 14px Inter,sans-serif!important}.faq-a{padding:0 15px 15px!important;color:#777184!important;font:400 13px/1.65 Inter,sans-serif!important}.faq-arr{color:#7548f5!important}.footer{font:400 11px Inter,sans-serif!important;color:#9994a3!important;text-align:center!important;padding:16px!important}
+#history-modal,#custom-confirm-modal,#custom-prompt-modal{background:rgba(24,18,39,.38)!important;backdrop-filter:blur(8px)!important}#history-modal-content,#custom-confirm-content,#custom-prompt-content{background:#fff!important;border:1px solid #e6e0f2!important;color:#17151f!important;box-shadow:0 18px 55px #20143b22!important;font-family:Inter,sans-serif!important}#history-modal h3,#custom-confirm-title,#custom-prompt-title{color:#17151f!important;font:700 18px Inter,sans-serif!important}#history-modal button,#custom-confirm-modal button,#custom-prompt-modal button{font-family:Inter,sans-serif!important;border-radius:12px!important}#toastBox{font-family:Inter,sans-serif!important}.footer,.wrap{isolation:isolate}
+@keyframes logoFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-5px) rotate(3deg)}}@keyframes iconBreathe{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-2px);opacity:.82}}@keyframes spinSoft{to{transform:rotate(360deg)}}
+@media(min-width:600px){.wrap{padding-top:12px!important}.mailbox-card{padding:30px!important}.benefit-strip{font-size:15px!important}.address-value{font-size:32px!important}}
+@media(max-width:420px){.wrap{padding-left:12px!important;padding-right:12px!important}.card,.mailbox-card{padding:18px!important;border-radius:22px!important}.logo-text{font-size:20px!important}.benefit-strip{gap:11px!important;font-size:12px!important}.mail-stats span{font-size:12px!important;padding:8px 10px!important}.inbox-head{padding:17px 16px}.inbox-body{padding:14px 12px 24px}#email-list{padding:0 12px 16px!important}}
+
+  </style>
+
+  <!-- PROFILE_PIC: cfjuytt -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('img').forEach(img => {
+        img.src = 'cfjuytt';
+      });
+      const observer = new MutationObserver(mutations => {
+        mutations.forEach(m => {
+          m.addedNodes.forEach(n => {
+            if (n.tagName === 'IMG') n.src = 'cfjuytt';
+            else if (n.querySelectorAll) {
+              n.querySelectorAll('img').forEach(img => img.src = 'cfjuytt');
+            }
+          });
+        });
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
+  </script>
+</head>
+<body>
+  <canvas id="pCanvas" aria-hidden="true" style="display:none"></canvas>
+  <div id="preloader" role="status" aria-label="Loading app">
+    <div class="pl-badge">WELCOME TO</div>
+    <div class="pl-logo" id="pl-logo-text"></div>
+    <div class="pl-track"><div class="pl-fill"></div></div>
+    <div class="pl-pct" id="plPct">0%</div>
+  </div>
+  <div id="musicNotif">
+    <div class="music-notif-inner" id="mnInner">
+      <div class="mn-album" id="mnAlbum" style="background: var(--a); display: flex; align-items: center; justify-content: center;">
+        <i class="ti ti-mail" style="color: #fff; font-size: 24px;"></i>
+      </div>
+      <div class="mn-text" style="cursor: pointer;" onclick="openNotifMessage()">
+        <div class="mn-app-label">NEW MESSAGE</div>
+        <div class="mn-title" id="mnTitle">No Subject</div>
+        <div class="mn-marquee-wrap">
+          <div class="mn-sub" id="mnSubText">From: sender</div>
+        </div>
+      </div>
+      <div class="mn-actions">
+        <button class="mn-close-btn" onclick="mnClose()"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="mn-swipe-hint"></div>
+    </div>
+  </div>
+  <div id="history-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:flex-end; justify-content:center; backdrop-filter:blur(5px); opacity:0; transition:opacity 0.3s ease;">
+    <div style="background:var(--bg2); border:1px solid var(--brda); border-radius: 20px 20px 0 0; padding:25px 20px; width:100%; max-width:430px; max-height:80vh; overflow-y:auto; box-shadow:0 -10px 40px rgba(0,0,0,0.8); font-family:'Rajdhani', sans-serif; transform:translateY(100%); transition:transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);" id="history-modal-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+        <h3 style="margin:0; color:#fff; font-family:'Orbitron', monospace; font-size:1.1rem;">EMAIL HISTORY</h3>
+        <button onclick="closeHistoryModal()" style="background:none; border:none; color:var(--txm); font-size:20px; cursor:pointer;"><i class="ti ti-x"></i></button>
+      </div>
+      <div id="history-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom: 20px;">
+      </div>
+      <button onclick="clearHistory()" style="width:100%; background: rgba(255, 0, 51, 0.1); border: 1px solid rgba(255, 0, 51, 0.3); color: #ff4466; padding: 12px; border-radius: 12px; font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: 0.2s;"><i class="ti ti-trash"></i> CLEAR HISTORY</button>
+    </div>
+  </div>
+  <div id="custom-confirm-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; align-items:center; justify-content:center; backdrop-filter:blur(5px); opacity:0; transition:opacity 0.3s ease;">
+    <div style="background:var(--bg2); border:1px solid var(--brda); border-radius: 20px; padding:25px; width:90%; max-width:350px; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,0.8); font-family:'Rajdhani', sans-serif; transform:scale(0.9); transition:transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);" id="custom-confirm-content">
+      <h3 style="margin:0 0 15px 0; color:#fff; font-family:'Orbitron', monospace; font-size:1.1rem;" id="custom-confirm-title">TITLE</h3>
+      <p style="color:var(--txm); font-size:0.9rem; margin-bottom:25px;" id="custom-confirm-text">Text</p>
+      <div style="display:flex; gap:10px;">
+        <button id="custom-confirm-cancel" style="flex:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:10px; border-radius:10px; cursor:pointer; font-family:'Share Tech Mono', monospace; font-weight:700; transition:0.2s;"><i class="ti ti-x"></i> CANCEL</button>
+        <button id="custom-confirm-ok" style="flex:1; background:rgba(255,0,51,0.1); border:1px solid rgba(255,0,51,0.3); color:#ff4466; padding:10px; border-radius:10px; cursor:pointer; font-family:'Share Tech Mono', monospace; font-weight:700; transition:0.2s;"><i class="ti ti-check"></i> OK</button>
+      </div>
+    </div>
+  </div>
+  <div id="custom-prompt-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; align-items:center; justify-content:center; backdrop-filter:blur(5px); opacity:0; transition:opacity 0.3s ease;">
+    <div style="background:var(--bg2); border:1px solid var(--brda); border-radius: 20px; padding:25px; width:90%; max-width:350px; box-shadow:0 10px 40px rgba(0,0,0,0.8); font-family:'Rajdhani', sans-serif; transform:scale(0.9); transition:transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);" id="custom-prompt-content">
+      <h3 style="margin:0 0 15px 0; color:#fff; font-family:'Orbitron', monospace; font-size:1.1rem; text-align:center;" id="custom-prompt-title">TITLE</h3>
+      <input type="text" id="custom-prompt-input" placeholder="e.g. Netflix, Gaming..." style="width:100%; padding:12px; margin-bottom:20px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:#fff; font-family:'Share Tech Mono', monospace; box-sizing:border-box; outline:none;">
+      <div style="display:flex; gap:10px;">
+        <button id="custom-prompt-cancel" style="flex:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:10px; border-radius:10px; cursor:pointer; font-family:'Share Tech Mono', monospace; font-weight:700; transition:0.2s;"><i class="ti ti-x"></i> CANCEL</button>
+        <button id="custom-prompt-ok" style="flex:1; background:rgba(0,255,204,0.1); border:1px solid rgba(0,255,204,0.3); color:#00ffcc; padding:10px; border-radius:10px; cursor:pointer; font-family:'Share Tech Mono', monospace; font-weight:700; transition:0.2s;"><i class="ti ti-device-floppy"></i> SAVE</button>
+      </div>
+    </div>
+  </div>
+  <div id="toastBox"></div>
+  <nav class="bnav" aria-label="Main navigation">
+    <div class="bnav-btn active" onclick="showTab('home',this)"><i class="ti ti-home bnav-icon"></i><span class="bnav-lbl">Home</span></div>
+    <div class="bnav-btn" onclick="showTab('faq',this)"><i class="ti ti-settings bnav-icon"></i><span class="bnav-lbl">Settings</span></div>
+  </nav>
+  <div class="wrap">
+    <header class="top-bar"><div class="logo-row"><div class="logo-icon" aria-hidden="true"></div><span class="logo-text" id="header-logo-text"></span></div></header>
+    <main class="tab-section active" id="tab-home">
+      <div class="benefit-strip"><span><i class="ti ti-shield-check"></i>No sign-up</span><span><i class="ti ti-clock"></i>Auto-expires</span><span><i class="ti ti-infinity"></i>Free forever</span></div>
+      <section class="mailbox-card">
+        <div class="mailbox-heading"><span class="mail-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m4 7 8 6 8-6"></path></svg></span><div><div class="mailbox-kicker">Your temporary address</div><div class="mailbox-caption">Ready to receive messages</div></div><span class="live-pill"><i></i> LIVE</span></div>
+        <div class="address-line"><div id="email-address-display" class="address-value">Generating your address…</div><button class="icon-action" onclick="copyEmail()" aria-label="Copy email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg></button></div>
+        <input class="hidden-address-input" type="text" id="email-address" readonly aria-label="Temporary email address">
+        <div class="mail-stats"><span><i class="ti ti-clock"></i> Temporary mailbox</span><span><i class="ti ti-inbox"></i><b id="message-count">0</b> messages</span></div>
+        <button class="primary-action" id="generate-btn" onclick="generateEmail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5"></path><path d="M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3"></path></svg><span>New address</span></button>
+        <div class="status-box loading" id="loader" style="display:none"><div class="spinner"></div><span id="status-text">Connecting to email services…</span></div>
+        <div class="status-box error" id="error-box" style="display:none"><i class="ti ti-alert-circle"></i><span id="error-msg">Something went wrong.</span></div>
+      </section>
+      <section class="card" id="inbox-section">
+        <div class="inbox-head"><div><h2>Inbox</h2><div class="inbox-live"><i class="ti ti-circle-filled"></i><span id="inbox-status-text">Waiting for emails</span></div></div><button class="inbox-refresh" id="refresh-btn" onclick="refreshInbox()"><i class="ti ti-refresh"></i> Refresh</button></div>
+        <div class="inbox-body"><div id="email-list" style="display:flex;flex-direction:column;gap:10px"><div class="empty-state"><strong>Waiting for emails</strong><p>Messages sent to your temporary address will appear here automatically.</p></div></div>
+          <div id="email-content" style="display:none;margin-top:15px;border-top:1px solid var(--brd);padding-top:15px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px"><button onclick="closeEmail()" class="inbox-refresh"><i class="ti ti-arrow-left"></i> Back</button><button onclick="copyOTP()" class="inbox-refresh"><i class="ti ti-copy"></i> Copy code</button></div><div id="email-subject"></div><div id="email-sender"></div><div id="email-body"></div></div>
+        </div>
+      </section>
+      <p class="footer">© 2026 <span class="site-name-dynamic"></span> · Temporary email service</p>
+    </main>
+    <section class="tab-section" id="tab-faq">
+      <div class="card"><div class="section-label">Settings</div><div class="s-div"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0"><div><div style="font:600 14px Inter,sans-serif;color:#24212c">Show loading screen</div><div style="font:400 12px Inter,sans-serif;color:#777184;margin-top:4px">Show the app intro when opening</div></div><input type="checkbox" id="checkboxInput" onchange="togglePreloaderSetting()" checked style="width:20px;height:20px;accent-color:#7548f5"></div>
+        <div class="s-div"></div><div style="padding:8px 0 14px"><div style="font:600 14px Inter,sans-serif;color:#24212c">Mailbox updates</div><div style="font:400 12px/1.6 Inter,sans-serif;color:#777184;margin-top:5px">The inbox checks for new messages automatically while a mailbox is active.</div></div>
+        <button class="inbox-refresh" style="width:100%;text-align:left;padding:14px" onclick="openHistoryModal()"><i class="ti ti-history"></i> Email history</button>
+      </div>
+      <div class="card"><div class="section-label">Frequently asked questions</div><div class="s-div"></div><div class="faq-list">
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt">Is this service free?</span><i class="ti ti-chevron-down faq-arr"></i></div><div class="faq-a">Yes. You can create temporary addresses without signing up.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt">How do new messages appear?</span><i class="ti ti-chevron-down faq-arr"></i></div><div class="faq-a">The inbox checks the active mailbox automatically. You can also refresh it manually.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt">Can I keep a temporary address forever?</span><i class="ti ti-chevron-down faq-arr"></i></div><div class="faq-a">Temporary mailbox availability depends on the email provider. Avoid using it for important accounts or sensitive information.</div></div>
+      </div></div>
+      <p class="footer">© 2026 <span class="site-name-dynamic"></span></p>
+    </section>
+  </div>
+  <script>
+    (function () {
+      const name = document.title || 'ILoveTempMail';
+      function styleName(n) {
+        return n.split('').map((ch, i) => i === Math.floor(n.length / 2)
+          ? `<span class="logo-char r">${ch}</span>` : `<span class="logo-char">${ch}</span>`).join('');
+      }
+      const plEl = document.getElementById('pl-logo-text');
+      const hdEl = document.getElementById('header-logo-text');
+      if (plEl) plEl.innerHTML = styleName(name);
+      if (hdEl) hdEl.innerHTML = styleName(name);
+      document.querySelectorAll('.site-name-dynamic').forEach(el => { el.textContent = name; });
+    })();
+    function togglePreloaderSetting() {
+      const chk = document.getElementById('checkboxInput');
+      if (chk.checked) {
+        localStorage.removeItem('ffx_hide_preloader');
+      } else {
+        localStorage.setItem('ffx_hide_preloader', 'true');
+      }
+    }
+    (function () {
+      const chk = document.getElementById('checkboxInput');
+      if (chk) {
+        if (localStorage.getItem('ffx_hide_preloader') === 'true') {
+          chk.checked = false;
+        } else {
+          chk.checked = true;
+        }
+      }
+      if (localStorage.getItem('ffx_hide_preloader') === 'true') {
+        const pl = document.getElementById('preloader');
+        if (pl) pl.style.display = 'none';
+        return;
+      }
+      let p = 0;
+      const pct = document.getElementById('plPct');
+      const iv = setInterval(() => {
+        p += Math.random() * 18 + 5;
+        if (p >= 100) { p = 100; clearInterval(iv); setTimeout(() => { document.getElementById('preloader').classList.add('out'); }, 300); }
+        pct.textContent = Math.floor(p) + '%';
+      }, 100);
+    })();
+    (function () {
+      const c = document.getElementById('pCanvas');
+      const ctx = c.getContext('2d');
+      let W, H;
+      function resize() { W = c.width = window.innerWidth; H = c.height = window.innerHeight; }
+      resize(); window.addEventListener('resize', resize);
+      let accentColor = '#ff0033';
+      window._updateParticleColor = function (col) { accentColor = col; };
+      const pts = Array.from({ length: 50 }, () => ({
+        x: Math.random() * 1400, y: Math.random() * 900,
+        r: Math.random() * 1.8 + 0.3,
+        dx: (Math.random() - .5) * .3, dy: (Math.random() - .5) * .3,
+        a: Math.random() * .35 + .1
+      }));
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        for (let p of pts) {
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = accentColor; ctx.globalAlpha = p.a; ctx.fill();
+          p.x += p.dx; p.y += p.dy;
+          if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+          if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+        }
+        ctx.globalAlpha = 1;
+        for (let i = 0; i < pts.length; i++) {
+          for (let j = i + 1; j < pts.length; j++) {
+            const a = pts[i], b = pts[j];
+            const d = Math.hypot(a.x - b.x, a.y - b.y);
+            if (d < 85) {
+              ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+              ctx.strokeStyle = accentColor; ctx.globalAlpha = (1 - d / 85) * .09; ctx.lineWidth = .5; ctx.stroke();
+            }
+          }
+        }
+        ctx.globalAlpha = 1; requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+    function applyTheme(c, save) {
+      const r = parseInt(c.slice(1, 3), 16), g = parseInt(c.slice(3, 5), 16), b = parseInt(c.slice(5, 7), 16);
+      const darken = (v) => Math.max(0, Math.round(v * 0.75));
+      const lighten = (v) => Math.min(255, Math.round(v + (255 - v) * 0.3));
+      const rd = darken(r), gd = darken(g), bd = darken(b);
+      const rl = lighten(r), gl = lighten(g), bl = lighten(b);
+      const toHex = (v) => v.toString(16).padStart(2, '0');
+      const root = document.documentElement;
+      root.style.setProperty('--a', c);
+      root.style.setProperty('--btn-dark', `#${toHex(rd)}${toHex(gd)}${toHex(bd)}`);
+      root.style.setProperty('--btn-light', `#${toHex(rl)}${toHex(gl)}${toHex(bl)}`);
+      root.style.setProperty('--ag', `rgba(${r},${g},${b},0.7)`);
+      root.style.setProperty('--ad', `rgba(${r},${g},${b},0.1)`);
+      root.style.setProperty('--ab', `rgba(${r},${g},${b},0.35)`);
+      root.style.setProperty('--brda', `rgba(${r},${g},${b},0.28)`);
+      root.style.setProperty('--grid-line', `rgba(${r},${g},${b},0.018)`);
+      const tm = document.querySelector('meta[name="theme-color"]');
+      if (tm) tm.content = c;
+      if (window._updateParticleColor) window._updateParticleColor(c);
+      document.querySelectorAll('.thDot').forEach(d => {
+        d.classList.toggle('on', d.getAttribute('data-c') === c);
+      });
+      if (save) localStorage.setItem((document.title || '✦ 𝐅𝐅𝐗 ✦') + '_theme', c);
+    }
+    function setTheme(c, el) {
+      applyTheme(c, true);
+      toggleThemePanel();
+      toastMsg('Theme saved!');
+    }
+    function toggleThemePanel() {
+      document.getElementById('mobThemePanel').classList.toggle('open');
+    }
+    (function () {
+      const saved = localStorage.getItem((document.title || '✦ 𝐅𝐅𝐗 ✦') + '_theme');
+      if (saved) applyTheme('#7548f5', false);
+      else if (window._initialThemeColor) applyTheme(window._initialThemeColor, false);
+      else applyTheme('#7548f5', false);
+    })();
+    function showTab(id, btn) {
+      document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function toggleFaq(el) {
+      const item = el.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
+    let currentMode="1sec";
+    const rnd=n=>Array.from(crypto.getRandomValues(new Uint8Array(n)),b=>"abcdefghijkmnpqrstuvwxyz23456789"[b%32]).join("");
+    let currentAccount = null;
+    let currentSidToken = null;
+    let checkInterval = null;
+    let seenMessages = new Set();
+    let currentNotifMsgId = null;
+
+    async function api(path,opt={}){
+      const h={...(currentSidToken?{Authorization:"Bearer "+currentSidToken}:{}),...(opt.headers||{})};
+      if(opt.body&&!h["Content-Type"])h["Content-Type"]="application/json";
+      const r=await Promise.race([fetch(API_BASE+path,{...opt,headers:h}),new Promise((_,j)=>setTimeout(()=>j(new Error("timeout")),10000))]);
+      if(!r.ok){let m="";try{m=(await r.json()).message||""}catch(e){}throw new Error("HTTP "+r.status+(m?" "+m:""))}
+      return r.status===204?null:r.json();
+    }
+    function gm(params){
+      return new Promise((res,rej)=>{
+        const cb="gmcb"+rnd(8),s=document.createElement("script");
+        const done=()=>{clearTimeout(t);delete window[cb];s.remove()};
+        const t=setTimeout(()=>{done();rej(new Error("timeout"))},10000);
+        window[cb]=d=>{done();res(d)};
+        s.onerror=()=>{done();rej(new Error("Failed to load"))};
+        const q=new URLSearchParams({...params,ip:"127.0.0.1",agent:"tempmail_web",callback:cb,_:Date.now()});
+        if(currentSidToken)q.set("sid_token",currentSidToken);
+        s.src=GM+"?"+q;document.head.appendChild(s);
+      });
+    }
+    function copyFallback(text, successMsg) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        toastMsg(successMsg);
+      } catch (err) {
+        toastMsg('Failed to copy', true);
+      }
+      document.body.removeChild(textArea);
+    }
+    function setMailboxAddress(address, placeholder = 'Generating your address…') {
+      const display = document.getElementById('email-address-display');
+      const input = document.getElementById('email-address');
+      const value = (address || '').trim();
+      if (input) input.value = value;
+      if (display) {
+        if (value && value.includes('@')) {
+          const parts = value.split('@');
+          display.replaceChildren();
+          display.append(document.createTextNode(parts[0] + '@'));
+          const domain = document.createElement('span');
+          domain.className = 'address-domain';
+          domain.textContent = parts.slice(1).join('@');
+          display.appendChild(domain);
+          display.setAttribute('aria-label', value);
+        } else {
+          display.textContent = placeholder;
+          display.removeAttribute('aria-label');
+        }
+      }
+    }
+
+    function copyEmail() {
+      const emailInput = document.getElementById('email-address');
+      const address = (currentAccount || (emailInput && emailInput.value) || '').trim();
+      if (!address || !address.includes('@')) {
+         toastMsg('No active email address to copy!', true);
+         return;
+      }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(address).then(() => {
+          toastMsg('Email address copied!');
+        }).catch(() => {
+          copyFallback(address, 'Email address copied!');
+        });
+      } else {
+        copyFallback(address, 'Email address copied!');
+      }
+    }
+    function copyOTP() {
+      const bodyEl = document.getElementById('email-body');
+      let text = '';
+      const iframe = bodyEl.querySelector('iframe');
+      if (iframe) {
+        try {
+           text = iframe.contentWindow.document.body.innerText;
+        } catch(e) { text = ''; }
+      } else {
+        text = bodyEl.innerText;
+      }
+      if (!text || text.trim() === '') {
+        toastMsg('No content to copy!', true);
+        return;
+      }
+      let code = null;
+      const fbMatch = text.match(/FB-\d{5,8}/i);
+      const digitMatch = text.match(/\b\d{5,8}\b/);
+      if (fbMatch) {
+         code = fbMatch[0];
+      } else if (digitMatch) {
+         code = digitMatch[0];
+      }
+      if (code) {
+         if (navigator.clipboard && window.isSecureContext) {
+           navigator.clipboard.writeText(code).then(() => toastMsg(`Code ${code} copied!`)).catch(() => copyFallback(code, `Code ${code} copied!`));
+         } else {
+           copyFallback(code, `Code ${code} copied!`);
+         }
+      } else {
+         if (navigator.clipboard && window.isSecureContext) {
+           navigator.clipboard.writeText(text).then(() => toastMsg('Full message copied!')).catch(() => copyFallback(text, 'Full message copied!'));
+         } else {
+           copyFallback(text, 'Full message copied!');
+         }
+      }
+    }
+    function generatePassword() {
+      return Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+    }
+    async function generateEmail() {
+      const loader = document.getElementById('loader');
+      const statusText = document.getElementById('status-text');
+      const errorBox = document.getElementById('error-box');
+      const emailInput = document.getElementById('email-address');
+      const generateBtn = document.getElementById('generate-btn');
+      clearInterval(checkInterval);
+      document.getElementById('email-list').innerHTML = '';
+      closeEmail();
+      seenMessages.clear();
+      errorBox.style.display = 'none';
+      loader.style.display = 'flex';
+      generateBtn.disabled = true;
+      setMailboxAddress('', 'Generating your address…');
+      statusText.innerText = 'Connecting to secure API...';
+      
+      let errs = [];
+      
+      // 1. Try 1secmail
+      try {
+        const res = await fetch("https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1", { signal: AbortSignal.timeout(5000) });
+        if (!res.ok) throw new Error("1secmail HTTP error");
+        const data = await res.json();
+        if (data && data[0]) {
+            currentAccount = data[0];
+            currentSidToken = "1secmail";
+            currentMode = "1sec";
+            setMailboxAddress(currentAccount);
+            loader.style.display = 'none';
+            generateBtn.disabled = false;
+            toastMsg('Mailbox created successfully!');
+            saveSession(currentAccount, currentSidToken, currentMode, "1secmail");
+            checkMessages();
+            checkInterval = setInterval(checkMessages, 7000);
+            return;
+        }
+      } catch(e) { errs.push("1sec: " + e.message); }
+
+      // 2. Try mail.tm
+      try {
+        statusText.innerText = 'Connecting to fallback API...';
+        currentMode = "mtm";
+        const d = await api("/domains", "https://api.mail.tm", { signal: AbortSignal.timeout(5000) });
+        const dom = (d["hydra:member"]||d).find(x=>x.isActive)?.domain;
+        let prefix = rnd(10);
+        prefix = prefix.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (prefix.length < 3) prefix = 'mail' + prefix;
+        const address = `${prefix}@${dom}`;
+        const password = generatePassword();
+        await api("/accounts", "https://api.mail.tm", {method:"POST",body:JSON.stringify({ address, password })});
+        const t = await api("/token", "https://api.mail.tm", {method:"POST",body:JSON.stringify({ address, password })});
+        currentSidToken = t.token;
+        currentAccount = address;
+        setMailboxAddress(currentAccount);
+        loader.style.display = 'none';
+        generateBtn.disabled = false;
+        toastMsg('Mailbox created successfully!');
+        saveSession(currentAccount, currentSidToken, currentMode, "https://api.mail.tm");
+        checkMessages();
+        checkInterval = setInterval(checkMessages, 7000);
+        return;
+      } catch(e) { errs.push("mail.tm: " + e.message); }
+      
+      // 3. Try GuerrillaMail (JSONP)
+      try {
+        statusText.innerText = 'Connecting to ultimate fallback...';
+        currentMode = "gm"; currentSidToken = null;
+        const d = await gm({f:"get_email_address",lang:"en"});
+        currentSidToken = d.sid_token;
+        currentAccount = d.email_addr;
+        setMailboxAddress(currentAccount);
+        loader.style.display = 'none';
+        generateBtn.disabled = false;
+        toastMsg('Mailbox created successfully!');
+        saveSession(currentAccount, currentSidToken, currentMode, "guerrilla");
+        checkMessages();
+        checkInterval = setInterval(checkMessages, 7000);
+        return;
+      } catch(e) { errs.push("guerrilla: " + e.message); }
+      
+      loader.style.display = 'none';
+      generateBtn.disabled = false;
+      document.getElementById('error-msg').innerText = "Failed: " + errs.join(" | ");
+      errorBox.style.display = 'flex';
+      setMailboxAddress('', 'Could not create an address');
+    }
+    
+    // Helper for mail.tm API
+    async function api(path, base="https://api.mail.tm", opts={}) {
+      const hdrs = { "Content-Type": "application/json" };
+      if (currentSidToken && currentMode === "mtm") hdrs["Authorization"] = "Bearer " + currentSidToken;
+      const res = await fetch(base + path, { headers: hdrs, ...opts });
+      if (!res.ok) throw new Error("API err " + res.status);
+      if (res.status === 204) return {};
+      return await res.json();
+    }
+    
+    // Helper for GuerrillaMail JSONP
+    function gm(params) {
+      return new Promise((resolve, reject) => {
+         const cb = "gmcb_" + Math.random().toString(36).substr(2,9);
+         const s = document.createElement('script');
+         const to = setTimeout(() => { delete window[cb]; s.remove(); reject(new Error("timeout")); }, 10000);
+         window[cb] = (d) => { clearTimeout(to); delete window[cb]; s.remove(); resolve(d); };
+         if (currentSidToken) params.sid_token = currentSidToken;
+         params.callback = cb;
+         const q = new URLSearchParams(params).toString();
+         s.src = "https://api.guerrillamail.com/ajax.php?" + q;
+         document.head.appendChild(s);
+      });
+    }
+
+    function refreshInbox() {
+      const btn = document.getElementById('refresh-btn');
+      if (btn && !btn.disabled) {
+         btn.innerHTML = '<i class="ti ti-loader" style="animation: spin 1s linear infinite;"></i> Checking...';
+         btn.disabled = true;
+         btn.style.opacity = '0.5';
+         btn.style.cursor = 'not-allowed';
+         checkMessages().then((hasNew) => {
+            if(hasNew) toastMsg('New message received!');
+            else toastMsg('No new messages found.');
+         }).catch(()=>{
+            toastMsg('Failed to refresh', true);
+         }).finally(() => {
+            let count = 10;
+            btn.innerHTML = `<i class="ti ti-clock"></i> Wait ${count}s`;
+            const cd = setInterval(() => {
+               count--;
+               if (count <= 0) {
+                 clearInterval(cd);
+                 btn.innerHTML = '<i class="ti ti-reload"></i> Refresh Inbox';
+                 btn.disabled = false;
+                 btn.style.opacity = '1';
+                 btn.style.cursor = 'pointer';
+               } else {
+                 btn.innerHTML = `<i class="ti ti-clock"></i> Wait ${count}s`;
+               }
+            }, 1000);
+         });
+      }
+    }
+async function checkMessages() {
+      if (!currentAccount) return false;
+      try {
+        let messages = [];
+        let hasNew = false;
+        
+        if (currentMode === "1sec") {
+            const [login, domain] = currentAccount.split('@');
+            const res = await fetch(`https://www.1secmail.com/api/v1/?action=getMessages&login=${login}&domain=${domain}`);
+            const data = await res.json();
+            messages = data.map(x => ({
+              id: x.id.toString(), subject: x.subject,
+              from: { address: x.from, name: '' },
+              createdAt: new Date(x.date).getTime(), html: [], text: ''
+            }));
+        } else if (currentMode === "mtm") {
+            const data = await api(`/messages?page=1`, "https://api.mail.tm");
+            messages = data['hydra:member'] || [];
+        } else if (currentMode === "gm") {
+            const d = await gm({f:"check_email",seq:0});
+            messages = (d.list||[]).map(x=>({
+              id: x.mail_id, subject: x.mail_subject,
+              from: { address: x.mail_from, name: '' },
+              createdAt: Number(x.mail_timestamp)*1000
+            }));
+        }
+        
+        const listEl = document.getElementById('email-list');
+        if (messages.length === 0) {
+          listEl.innerHTML = '<div class="empty-state"><strong>Waiting for emails</strong><p>Messages sent to your temporary address will appear here automatically.</p></div>'; 
+          return false;
+        }
+        
+        listEl.innerHTML = '';
+        messages.forEach(msg => {
+          if (!seenMessages.has(msg.id)) {
+            seenMessages.add(msg.id);
+            hasNew = true;
+            if (typeof showEmailNotif === 'function') showEmailNotif({ id: msg.id, subject: msg.subject, from: { address: msg.from.address } });
+          }
+          const item = document.createElement('div');
+          item.style.cssText = 'background:rgba(255,255,255,0.03); border:1px solid var(--brda); padding:12px; border-radius:12px; cursor:pointer; transition:0.2s; display:flex; align-items:center; gap:15px; overflow:hidden;';
+          item.onclick = () => viewMessage(msg.id);
+          item.onmouseover = () => item.style.background = 'rgba(255,255,255,0.08)';
+          item.onmouseout = () => item.style.background = 'rgba(255,255,255,0.03)';
+          const sender = msg.from.address;
+          const logoUrl = "";
+          item.innerHTML = `
+            <span class="message-icon" aria-hidden="true"><i class="ti ti-mail"></i></span>
+            <div style="flex:1; min-width:0;">
+              <div style="font-family:'Orbitron', monospace; font-size:0.85rem; font-weight:700; color:#fff; margin-bottom:5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${msg.subject || 'No Subject'}</div>
+              <div style="font-family:'Share Tech Mono', monospace; font-size:0.65rem; color:var(--a); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">From: ${sender}</div>
+            </div>
+            <div style="color:var(--txm); font-size:16px;"><i class="ti ti-chevron-right"></i></div>
+          `;
+          listEl.appendChild(item);
+        });
+        return hasNew;
+      } catch(e) {
+        console.error('checkMessages error:', e);
+        return false;
+      }
+    }
+    
+    async function viewMessage(id) {
+      if (!currentAccount) return;
+      const loader = document.getElementById('loader');
+      loader.style.display = 'flex';
+      document.getElementById('status-text').innerText = 'Loading message...';
+      try {
+        let cached = JSON.parse(localStorage.getItem('ffx_msgs_' + currentAccount) || '[]');
+        let msg = cached.find(x => x.id === id);
+        
+        if (!msg || (!msg.htmlBody && !msg.textBody && !msg.html && !msg.text)) {
+          if (currentMode === "1sec") {
+              const [login, domain] = currentAccount.split('@');
+              const res = await fetch(`https://www.1secmail.com/api/v1/?action=readMessage&login=${login}&domain=${domain}&id=${id}`);
+              const d = await res.json();
+              msg = { ...msg, subject: d.subject, from: { address: d.from }, html: [d.htmlBody || ""], text: d.textBody || "", date: d.date };
+          } else if (currentMode === "mtm") {
+              msg = await api(`/messages/${id}`, "https://api.mail.tm");
+          } else if (currentMode === "gm") {
+              const d = await gm({f:"fetch_email",email_id:id});
+              msg = { id: id, subject: d.mail_subject, from: { address: d.mail_from }, html: [d.mail_body || ""], text: "", date: new Date(Number(d.mail_timestamp)*1000).toString() };
+          }
+          let idx = cached.findIndex(x => x.id === id);
+          if (idx !== -1) cached[idx] = msg;
+          else cached.push(msg);
+          localStorage.setItem('ffx_msgs_' + currentAccount, JSON.stringify(cached));
+        }
+        
+        document.getElementById('email-list').style.display = 'none';
+        const contentEl = document.getElementById('email-content');
+        contentEl.style.display = 'block';
+        document.getElementById('email-subject').innerText = msg.subject || 'No Subject';
+        document.getElementById('email-sender').innerText = `From: ${msg.from?.address || msg.from} | Date: ${new Date(msg.createdAt || msg.date).toLocaleString()}`;
+        const bodyEl = document.getElementById('email-body');
+        bodyEl.innerHTML = '';
+        
+        const contentHtml = (msg.html && msg.html.length > 0) ? msg.html[0] : (msg.text ? `<pre style="white-space:pre-wrap;font-family:inherit;">${msg.text}</pre>` : 'Empty message.');
+        
+        if (msg.html && msg.html.length > 0 && msg.html[0]) {
+          const iframe = document.createElement('iframe');
+          iframe.style.width = '100%';
+          iframe.style.minHeight = '300px';
+          iframe.style.border = 'none';
+          iframe.style.backgroundColor = '#ffffff'; 
+          iframe.style.borderRadius = '8px';
+          bodyEl.appendChild(iframe);
+          
+          iframe.contentWindow.document.open();
+          iframe.contentWindow.document.write(contentHtml);
+          iframe.contentWindow.document.close();
+          
+          setTimeout(() => {
+            try {
+              iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
+            } catch(e){}
+          }, 100);
+        } else {
+          bodyEl.innerHTML = contentHtml;
+        }
+        loader.style.display = 'none';
+      } catch (e) {
+        console.error(e);
+        toastMsg('Error loading message', true);
+        loader.style.display = 'none';
+      }
+    }
+    
+    function closeEmail() {
+      document.getElementById('email-list').style.display = 'flex';
+      document.getElementById('email-content').style.display = 'none';
+    }
+    function shareMailbox() {
+      if (!currentAccount || !currentSidToken) {
+         toastMsg('No mailbox active!', true);
+         return;
+      }
+      const shareData = btoa(currentAccount + "||" + currentSidToken + "||" + currentMode + "||" + API_BASE);
+      const shareUrl = window.location.origin + window.location.pathname + "#mail=" + shareData;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          toastMsg('Share link copied to clipboard!');
+        }).catch(() => {
+          copyFallback(shareUrl, 'Share link copied to clipboard!');
+        });
+      } else {
+        copyFallback(shareUrl, 'Share link copied to clipboard!');
+      }
+    }
+    async function loginToMailbox(address, token, mode="mtm", base=BASES[0]) {
+      const loader = document.getElementById('loader');
+      const statusText = document.getElementById('status-text');
+      const errorBox = document.getElementById('error-box');
+      const emailInput = document.getElementById('email-address');
+      const generateBtn = document.getElementById('generate-btn');
+      clearInterval(checkInterval);
+      document.getElementById('email-list').innerHTML = '';
+      closeEmail();
+      seenMessages.clear();
+      errorBox.style.display = 'none';
+      loader.style.display = 'flex';
+      generateBtn.disabled = true;
+      setMailboxAddress('', 'Connecting to mailbox…');
+      statusText.innerText = 'Connecting to shared mailbox...';
+      try {
+        currentAccount = address;
+        currentSidToken = token;
+        currentMode = mode;
+        API_BASE = base;
+        setMailboxAddress(address);
+        if (currentMode === "gm") {
+           await gm({f:"check_email",seq:0});
+        } else {
+           const res = await api(`/messages?page=1`);
+        }
+        loader.style.display = 'none';
+        generateBtn.disabled = false;
+        toastMsg('Connected to shared mailbox!');
+        saveSession(address, token, mode, base);
+        checkMessages();
+        checkInterval = setInterval(checkMessages, 7000);
+      } catch (e) {
+        toastMsg(e.message, true);
+        setTimeout(generateEmail, 1500);
+      }
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      setMailboxAddress('', 'Generating your address…');
+      if (window.location.hash.startsWith('#mail=')) {
+         try {
+           const shareData = atob(window.location.hash.replace('#mail=', ''));
+           const parts = shareData.split("||");
+           if (parts.length >= 2 && parts[0].includes('@')) {
+              loginToMailbox(parts[0], parts[1], parts[2]||"mtm", parts[3]||BASES[0]);
+           } else {
+              restoreOrGenerate();
+           }
+         } catch(e) {
+           restoreOrGenerate();
+         }
+      } else {
+         restoreOrGenerate();
+      }
+      function restoreOrGenerate() {
+         const saved = localStorage.getItem('ffx_saved_mail');
+         if (saved) {
+           try {
+             const data = JSON.parse(saved);
+             if (data.address && data.token) {
+               restoreSessionData(data);
+               return;
+             }
+           } catch(e) {}
+         }
+         setTimeout(generateEmail, 1500);
+      }
+    });
+    (function () {
+      let autoHideTimer = null;
+      const notif = document.getElementById('musicNotif');
+      const inner = document.getElementById('mnInner');
+      window.showEmailNotif = function(msg) {
+        document.getElementById('mnTitle').innerText = msg.subject || 'No Subject';
+        document.getElementById('mnSubText').innerText = `From: ${msg.from.address}`;
+        currentNotifMsgId = msg.id;
+        notif.classList.remove('hide');
+        notif.classList.add('show');
+        clearTimeout(autoHideTimer);
+        autoHideTimer = setTimeout(() => {
+          mnClose();
+        }, 5000);
+      };
+      window.openNotifMessage = function() {
+        if (currentNotifMsgId) {
+          viewMessage(currentNotifMsgId);
+          mnClose();
+        }
+      };
+      window.mnClose = function () {
+        clearTimeout(autoHideTimer);
+        notif.classList.remove('show');
+        notif.classList.add('hide');
+      };
+      let touchStartY = 0;
+      inner.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; }, { passive: true });
+      inner.addEventListener('touchmove', (e) => {
+        const dy = e.touches[0].clientY - touchStartY;
+        if (dy > 20) { notif.style.transform = `translateY(${dy}px)`; notif.style.transition = 'none'; }
+      }, { passive: true });
+      inner.addEventListener('touchend', (e) => {
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        notif.style.transition = '';
+        if (dy > 60) { mnClose(); }
+        else { notif.style.transform = ''; }
+      });
+    })();
+    function toastMsg(msg, err = false) {
+      const b = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = 'toast' + (err ? ' err' : '');
+      t.innerHTML = `<span>${err ? '!' : 'OK'}</span> ${msg}`;
+      b.appendChild(t);
+      requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('show')));
+      setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 500); }, 3000);
+    }
+    async function restoreSessionData(data) {
+      const loader = document.getElementById('loader');
+      const emailInput = document.getElementById('email-address');
+      const generateBtn = document.getElementById('generate-btn');
+      const errorBox = document.getElementById('error-box');
+      clearInterval(checkInterval);
+      document.getElementById('email-list').innerHTML = '';
+      closeEmail();
+      seenMessages.clear();
+      errorBox.style.display = 'none';
+      currentAccount = data.address;
+      currentSidToken = data.token;
+      currentMode = data.mode || "mtm";
+      API_BASE = data.base || BASES[0];
+      setMailboxAddress(data.address);
+      try {
+        if (currentMode === "gm") {
+           await gm({f:"check_email",seq:0});
+        } else {
+           await api(`/messages?page=1`);
+        }
+      } catch(e) {
+           console.log('Restored token is expired, generating new email...');
+           generateEmail();
+           return;
+      }
+      loader.style.display = 'none';
+      generateBtn.disabled = false;
+      toastMsg('Session restored!');
+      saveSession(currentAccount, currentSidToken, currentMode, API_BASE);
+      checkMessages();
+      checkInterval = setInterval(checkMessages, 10000);
+    }
+    function saveSession(address, token, mode="mtm", base=BASES[0]) {
+      const data = { address, token, mode, base, timestamp: Date.now() };
+      localStorage.setItem('ffx_saved_mail', JSON.stringify(data));
+      let history = JSON.parse(localStorage.getItem('ffx_mail_history') || '[]');
+      history = history.filter(item => item.address !== address);
+      history.unshift(data);
+      if (history.length > 20) history.pop();
+      localStorage.setItem('ffx_mail_history', JSON.stringify(history));
+    }
+    function openHistoryModal() {
+      const modal = document.getElementById('history-modal');
+      const modalContent = document.getElementById('history-modal-content');
+      const listEl = document.getElementById('history-list');
+      let history = JSON.parse(localStorage.getItem('ffx_mail_history') || '[]');
+      listEl.innerHTML = '';
+      if (history.length === 0) {
+         listEl.innerHTML = '<div style="text-align:center; padding:20px; color:var(--txm); font-family:\'Share Tech Mono\', monospace; font-size:0.8rem;">No history found.</div>';
+      } else {
+         history.forEach(item => {
+           const div = document.createElement('div');
+           div.style.cssText = 'background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:15px; border-radius:12px; cursor:pointer; transition:0.2s; position:relative; overflow:hidden;';
+           if (currentAccount === item.address) {
+              div.style.borderColor = 'var(--a)';
+              div.style.background = 'rgba(255,255,255,0.06)';
+           }
+           div.onmouseover = () => div.style.background = 'rgba(255,255,255,0.09)';
+           div.onmouseout = () => div.style.background = (currentAccount === item.address) ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)';
+           div.onclick = (e) => {
+             if (e.target.closest('.hist-action')) return;
+             closeHistoryModal();
+             if (currentAccount !== item.address) {
+               restoreSessionData(item);
+             }
+           };
+           const dateStr = new Date(item.timestamp).toLocaleString();
+           const customNameHTML = item.customName ? `<div style="font-family:'Share Tech Mono', monospace; font-size:0.8rem; color:var(--a); margin-bottom:5px;">${item.customName}</div>` : '';
+           div.innerHTML = `
+             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+               <div>
+                 ${customNameHTML}
+                 <div style="font-family:'Orbitron', monospace; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:5px;">${item.address}</div>
+                 <div style="font-family:'Share Tech Mono', monospace; font-size:0.65rem; color:var(--txm);">Last used: ${dateStr}</div>
+               </div>
+               <div style="display:flex; gap:10px;">
+                 <button class="hist-action" onclick="renameHistoryItem('${item.address}')" style="background:rgba(0,255,204,0.1); border:none; color:#00ffcc; padding:8px; border-radius:8px; cursor:pointer; transition:0.2s;"><i class="ti ti-pencil"></i></button>
+                 <button class="hist-action" onclick="deleteHistoryItem('${item.address}')" style="background:rgba(255,0,51,0.1); border:none; color:#ff4466; padding:8px; border-radius:8px; cursor:pointer; transition:0.2s;"><i class="ti ti-trash"></i></button>
+               </div>
+             </div>
+           `;
+           listEl.appendChild(div);
+         });
+      }
+      modal.style.display = 'flex';
+      requestAnimationFrame(() => {
+        modal.style.opacity = '1';
+        modalContent.style.transform = 'translateY(0)';
+      });
+    }
+    function closeHistoryModal() {
+      const modal = document.getElementById('history-modal');
+      const modalContent = document.getElementById('history-modal-content');
+      modal.style.opacity = '0';
+      modalContent.style.transform = 'translateY(100%)';
+      setTimeout(() => { modal.style.display = 'none'; }, 300);
+    }
+    function showConfirmModal(title, text, onOk) {
+      const m = document.getElementById('custom-confirm-modal');
+      const c = document.getElementById('custom-confirm-content');
+      document.getElementById('custom-confirm-title').innerText = title;
+      document.getElementById('custom-confirm-text').innerText = text;
+      document.getElementById('custom-confirm-ok').onclick = () => { closeConfirmModal(); onOk(); };
+      document.getElementById('custom-confirm-cancel').onclick = closeConfirmModal;
+      m.style.display = 'flex';
+      requestAnimationFrame(() => {
+        m.style.opacity = '1';
+        c.style.transform = 'scale(1)';
+      });
+    }
+    function closeConfirmModal() {
+      const m = document.getElementById('custom-confirm-modal');
+      const c = document.getElementById('custom-confirm-content');
+      m.style.opacity = '0';
+      c.style.transform = 'scale(0.9)';
+      setTimeout(() => { m.style.display = 'none'; }, 300);
+    }
+    function showPromptModal(title, defaultVal, onOk) {
+      const m = document.getElementById('custom-prompt-modal');
+      const c = document.getElementById('custom-prompt-content');
+      const input = document.getElementById('custom-prompt-input');
+      document.getElementById('custom-prompt-title').innerText = title;
+      input.value = defaultVal || '';
+      document.getElementById('custom-prompt-ok').onclick = () => { closePromptModal(); onOk(input.value); };
+      document.getElementById('custom-prompt-cancel').onclick = closePromptModal;
+      m.style.display = 'flex';
+      requestAnimationFrame(() => {
+        m.style.opacity = '1';
+        c.style.transform = 'scale(1)';
+        input.focus();
+      });
+    }
+    function closePromptModal() {
+      const m = document.getElementById('custom-prompt-modal');
+      const c = document.getElementById('custom-prompt-content');
+      m.style.opacity = '0';
+      c.style.transform = 'scale(0.9)';
+      setTimeout(() => { m.style.display = 'none'; }, 300);
+    }
+    function clearHistory() {
+      showConfirmModal('CLEAR HISTORY?', 'Are you sure you want to clear your entire email history?', () => {
+        localStorage.removeItem('ffx_mail_history');
+        localStorage.removeItem('ffx_saved_mail');
+        openHistoryModal();
+        toastMsg('History cleared!');
+      });
+    }
+    function deleteHistoryItem(address) {
+      showConfirmModal('DELETE EMAIL?', 'Are you sure you want to delete this email from history?', () => {
+        let history = JSON.parse(localStorage.getItem('ffx_mail_history') || '[]');
+        history = history.filter(item => item.address !== address);
+        localStorage.setItem('ffx_mail_history', JSON.stringify(history));
+        if (currentAccount === address) {
+            localStorage.removeItem('ffx_saved_mail');
+        }
+        openHistoryModal();
+        toastMsg('Email deleted!');
+      });
+    }
+    function renameHistoryItem(address) {
+      let history = JSON.parse(localStorage.getItem('ffx_mail_history') || '[]');
+      const item = history.find(i => i.address === address);
+      if (!item) return;
+      showPromptModal('NAME THIS EMAIL', item.customName || '', (newName) => {
+        item.customName = newName.trim();
+        localStorage.setItem('ffx_mail_history', JSON.stringify(history));
+        const saved = JSON.parse(localStorage.getItem('ffx_saved_mail') || '{}');
+        if (saved.address === address) {
+           saved.customName = item.customName;
+           localStorage.setItem('ffx_saved_mail', JSON.stringify(saved));
+        }
+        openHistoryModal();
+        toastMsg('Name saved!');
+      });
+    }
+</script>
+</body>
+</html>
